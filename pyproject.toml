@@ -5,8 +5,9 @@ description = ""
 authors = ["Madelaine Boyd <madelaine.boyd+github@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.8, <3.11"
 pymp-pypi = "^0.4.5"
+numpy = "^1.21.4"
 
 [tool.poetry.dev-dependencies]
 

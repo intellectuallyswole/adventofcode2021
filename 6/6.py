@@ -4,17 +4,18 @@ from functools import cache, partial, reduce
 
 @cache
 def processfishsteps(fish: int, steps: int) -> int:
+    """Returns the total sum of fish after 'steps' steps."""
     if steps <= 0:
         return 1
     else:
         ret = processfishwork(fish)
         processrec = partial(processfishsteps, steps=steps-1)
-        for fishi in ret:
-            return reduce(lambda x, y: x+y,  map(processrec, ret), 0)
-            return processfishsteps(fishi, steps - 1)
+        rec_fish_list = list(map(processrec, ret))
+        return reduce(lambda x, y: x+y,  rec_fish_list, 0)
 
 @cache
 def processfishwork(fish: int) -> List[int]:
+    """Returns the result of fish after one step"""
     if fish == 0:
         return [6, 8]
     else:
@@ -49,7 +50,7 @@ if __name__ == "__main__":
     # ENDTEMP
     print(f"Initial size: {len(list(fisharr))}")
 
-    sum_arr = pymp.shared.array(cc, dtype='uint8')
+    sum_arr = pymp.shared.array(cc, dtype='uint64')
     with pymp.Parallel(cc) as p:
         fr = p.thread_num * len(fisharr)//cc
         to = (p.thread_num +1)* len(fisharr)//cc
@@ -59,7 +60,7 @@ if __name__ == "__main__":
         for i in range(len(subarray)):
             # ret = len(processfish(subarray[i], steps))
             ret = processfishsteps(subarray[i], steps)
-            p.print(f"Partial sum at {i}: {ret}")
+            #p.print(f"Partial sum at {i}: {ret}")
             partial_sum += ret
         p.print(f"[{p.thread_num}]: Done. Final sum: {partial_sum}")
         sum_arr[p.thread_num] = partial_sum
